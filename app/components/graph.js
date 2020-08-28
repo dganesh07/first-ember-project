@@ -2,10 +2,12 @@ import Component from "@glimmer/component";
 import { action } from "@ember/object";
 import { tracked } from "@glimmer/tracking";
 
+import * as go from "gojs";
+
 export default class GraphComponent extends Component {
   @tracked iconName = "check-circle";
-  init() {
-    this._super(...arguments);
+  setupChart() {
+
     var $ = go.GraphObject.make;
     var myDiagram = $(go.Diagram, "myDiagramDiv", {
       // enable Ctrl-Z to undo and Ctrl-Y to redo
