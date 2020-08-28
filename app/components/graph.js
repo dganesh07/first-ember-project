@@ -2,6 +2,8 @@ import Component from "@glimmer/component";
 import { action } from "@ember/object";
 import { tracked } from "@glimmer/tracking";
 
+import * as go from "gojs";
+
 export default class GraphComponent extends Component {
   @tracked iconName = "check-circle";
   init() {
