@@ -61,5 +61,8 @@
   },
   "ember": {
     "edition": "octane"
+  },
+  "dependencies": {
+    "gojs": "^2.1.23"
   }
 }
