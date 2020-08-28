@@ -20,30 +20,22 @@ export default class GraphComponent extends Component {
     var nodeDataArray = [
       { key: 1, text: "Alpha", color: "lightblue" },
       { key: 2, text: "Beta", color: "orange" },
-      { key: 3, text: "Gamma", color: "lightgreen", group: 5 },
-      { key: 4, text: "Delta", color: "pink", group: 5 },
-      { key: 5, text: "Epsilon", color: "green", isGroup: true },
+      { key: 3, text: "Gamma", color: "lightgreen" },
+      { key: 4, text: "Delta", color: "pink" },
+      { key: 5, text: "Epsilon", color: "red" },
     ];
     var linkDataArray = [
-      { from: 1, to: 2, color: "blue" },
-      { from: 2, to: 2 },
-      { from: 3, to: 4, color: "green" },
-      { from: 3, to: 1, color: "purple" },
+      { from: 1, to: 2, color: "blue", text: "alpha-link" },
+      { from: 2, to: 3, color: "yellow", text: "beta-link" },
+      { from: 3, to: 4, color: "green", text: "gamma-link" },
+      { from: 4, to: 5, color: "purple", text: "delta-link" },
+      { from: 5, to: 1, color: "purple", text: "epsilon-link" },
     ];
     myDiagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
     this.testFunc();
 
     var partContextMenu = $(
       "ContextMenu",
-      this.makeButton("Properties", function (e, obj) {
-        // OBJ is this Button
-        var contextmenu = obj.part; // the Button is in the context menu Adornment
-        var part = contextmenu.adornedPart; // the adornedPart is the Part that the context menu adorns
-        // now can do something with PART, or with its data, or with the Adornment (the context menu)
-        if (part instanceof go.Link) alert(this.linkInfo(part.data));
-        else if (part instanceof go.Group) alert(groupInfo(contextmenu));
-        else alert(this.nodeInfo(part.data));
-      }),
       this.makeButton(
         "Cut",
         function (e, obj) {
@@ -177,6 +169,10 @@ export default class GraphComponent extends Component {
         go.Shape,
         { toArrow: "Standard", stroke: null },
         new go.Binding("fill", "color")
+      ),
+      $(
+        go.TextBlock, // this is a Link label
+        new go.Binding("text", "text")
       ),
       {
         // this tooltip Adornment is shared by all links
