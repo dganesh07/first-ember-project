@@ -32,7 +32,6 @@ export default class GraphComponent extends Component {
       { from: 5, to: 1, color: "purple", text: "epsilon-link" },
     ];
     myDiagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
-    this.testFunc();
 
     var self = this;
     var partContextMenu = $(
@@ -93,15 +92,6 @@ export default class GraphComponent extends Component {
         new go.Binding("text", "text").makeTwoWay()
       ), // the label shows the node data's text
       {
-        // this tooltip Adornment is shared by all nodes
-        toolTip: $(
-          "ToolTip",
-          $(
-            go.TextBlock,
-            { margin: 4 }, // the tooltip shows the result of calling nodeInfo(data)
-            new go.Binding("text", "", this.nodeInfo)
-          )
-        ),
         // this context menu Adornment is shared by all nodes
         contextMenu: partContextMenu,
       }
@@ -110,7 +100,7 @@ export default class GraphComponent extends Component {
     myDiagram.linkTemplate = $(
       go.Link,
       { selectionObjectName: "LINK-TEXT" },
-      { toShortLength: 3, relinkableFrom: true, relinkableTo: true }, // allow the user to relink existing links
+      { relinkableFrom: true, relinkableTo: true }, // allow the user to relink existing links
       $(go.Shape, { strokeWidth: 2 }, new go.Binding("stroke", "color")),
       $(
         go.Shape,
@@ -123,62 +113,9 @@ export default class GraphComponent extends Component {
         new go.Binding("text", "text")
       ),
       {
-        // this tooltip Adornment is shared by all links
-        toolTip: $(
-          "ToolTip",
-          $(
-            go.TextBlock,
-            { margin: 2 }, // the tooltip shows the result of calling linkInfo(data)
-            new go.Binding("text", "", this.linkInfo)
-          )
-        ),
         // the same context menu Adornment is shared by all links
         contextMenu: partContextMenu,
       }
-    );
-
-    myDiagram.toolTip = $(
-      "ToolTip",
-      $(
-        go.TextBlock,
-        { margin: 4 },
-        new go.Binding("text", "", this.diagramInfo)
-      )
-    );
-
-    myDiagram.contextMenu = $(
-      "ContextMenu",
-      this.makeButton(
-        "Paste",
-        function (e, obj) {
-          e.diagram.commandHandler.pasteSelection(
-            e.diagram.toolManager.contextMenuTool.mouseDownPoint
-          );
-        },
-        function (o) {
-          return o.diagram.commandHandler.canPasteSelection(
-            o.diagram.toolManager.contextMenuTool.mouseDownPoint
-          );
-        }
-      ),
-      this.makeButton(
-        "Undo",
-        function (e, obj) {
-          e.diagram.commandHandler.undo();
-        },
-        function (o) {
-          return o.diagram.commandHandler.canUndo();
-        }
-      ),
-      this.makeButton(
-        "Redo",
-        function (e, obj) {
-          e.diagram.commandHandler.redo();
-        },
-        function (o) {
-          return o.diagram.commandHandler.canRedo();
-        }
-      )
     );
   }
 
@@ -193,34 +130,6 @@ export default class GraphComponent extends Component {
             return o.diagram ? visiblePredicate(o, e) : false;
           }).ofObject()
         : {}
-    );
-  }
-
-  nodeInfo(d) {
-    // Tooltip info for a node data object
-    var str = "Node " + d.key + ": " + d.text + "\n";
-    if (d.group) str += "member of " + d.group;
-    else str += "top-level node";
-    return str;
-  }
-
-  testFunc() {
-    console.log("testFunc");
-  }
-
-  linkInfo(d) {
-    // Tooltip info for a link data object
-    return "Link:\nfrom " + d.from + " to " + d.to;
-  }
-
-  diagramInfo(model) {
-    // Tooltip info for the diagram's model
-    return (
-      "Model:\n" +
-      model.nodeDataArray.length +
-      " nodes, " +
-      model.linkDataArray.length +
-      " links"
     );
   }
 
@@ -242,6 +151,7 @@ export default class GraphComponent extends Component {
     }
     object.scale *= factor;
     adorn.diagram.commitTransaction("Change Text Size");
+    //adorn.diagram.requestUpdate();
   }
 
   @action
