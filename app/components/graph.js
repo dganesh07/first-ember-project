@@ -34,37 +34,16 @@ export default class GraphComponent extends Component {
     myDiagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
     this.testFunc();
 
+    var self = this;
     var partContextMenu = $(
       "ContextMenu",
       this.makeButton(
-        "Cut",
+        "Font Change",
         function (e, obj) {
-          e.diagram.commandHandler.cutSelection();
+          self.changeTextSize(obj, 2);
         },
         function (o) {
           return o.diagram.commandHandler.canCutSelection();
-        }
-      ),
-      this.makeButton(
-        "Copy",
-        function (e, obj) {
-          e.diagram.commandHandler.copySelection();
-        },
-        function (o) {
-          return o.diagram.commandHandler.canCopySelection();
-        }
-      ),
-      this.makeButton(
-        "Paste",
-        function (e, obj) {
-          e.diagram.commandHandler.pasteSelection(
-            e.diagram.toolManager.contextMenuTool.mouseDownPoint
-          );
-        },
-        function (o) {
-          return o.diagram.commandHandler.canPasteSelection(
-            o.diagram.toolManager.contextMenuTool.mouseDownPoint
-          );
         }
       ),
       this.makeButton(
@@ -75,48 +54,13 @@ export default class GraphComponent extends Component {
         function (o) {
           return o.diagram.commandHandler.canDeleteSelection();
         }
-      ),
-      this.makeButton(
-        "Undo",
-        function (e, obj) {
-          e.diagram.commandHandler.undo();
-        },
-        function (o) {
-          return o.diagram.commandHandler.canUndo();
-        }
-      ),
-      this.makeButton(
-        "Redo",
-        function (e, obj) {
-          e.diagram.commandHandler.redo();
-        },
-        function (o) {
-          return o.diagram.commandHandler.canRedo();
-        }
-      ),
-      this.makeButton(
-        "Group",
-        function (e, obj) {
-          e.diagram.commandHandler.groupSelection();
-        },
-        function (o) {
-          return o.diagram.commandHandler.canGroupSelection();
-        }
-      ),
-      this.makeButton(
-        "Ungroup",
-        function (e, obj) {
-          e.diagram.commandHandler.ungroupSelection();
-        },
-        function (o) {
-          return o.diagram.commandHandler.canUngroupSelection();
-        }
       )
     );
 
     myDiagram.nodeTemplate = $(
       go.Node,
       "Auto",
+      { selectionObjectName: "TEXT" },
       { locationSpot: go.Spot.Center },
       $(
         go.Shape,
@@ -138,12 +82,14 @@ export default class GraphComponent extends Component {
       $(
         go.TextBlock,
         {
-          font: "bold 14px sans-serif",
+          name: "TEXT",
+          font: "bold 10px sans-serif",
           stroke: "#333",
-          margin: 6, // make some extra space for the shape around the text
+          margin: 8, // make some extra space for the shape around the text
           isMultiline: false, // don't allow newlines in text
           editable: true, // allow in-place editing by user
         },
+        new go.Binding("font", "font").makeTwoWay(),
         new go.Binding("text", "text").makeTwoWay()
       ), // the label shows the node data's text
       {
@@ -180,7 +126,7 @@ export default class GraphComponent extends Component {
           "ToolTip",
           $(
             go.TextBlock,
-            { margin: 4 }, // the tooltip shows the result of calling linkInfo(data)
+            { margin: 2 }, // the tooltip shows the result of calling linkInfo(data)
             new go.Binding("text", "", this.linkInfo)
           )
         ),
@@ -274,6 +220,16 @@ export default class GraphComponent extends Component {
       model.linkDataArray.length +
       " links"
     );
+  }
+
+  changeTextSize(obj, factor) {
+    var adorn = obj.part;
+    adorn.diagram.startTransaction("Change Text Size");
+    var node = adorn.adornedPart;
+    var tb = node.findObject("TEXT");
+    tb.scale *= factor;
+    adorn.diagram.commitTransaction("Change Text Size");
+    console.log(tb.font);
   }
 
   @action
