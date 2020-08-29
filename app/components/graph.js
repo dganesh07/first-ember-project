@@ -60,7 +60,7 @@ export default class GraphComponent extends Component {
     myDiagram.nodeTemplate = $(
       go.Node,
       "Auto",
-      { selectionObjectName: "TEXT" },
+      { selectionObjectName: "NODE-TEXT" },
       { locationSpot: go.Spot.Center },
       $(
         go.Shape,
@@ -82,7 +82,7 @@ export default class GraphComponent extends Component {
       $(
         go.TextBlock,
         {
-          name: "TEXT",
+          name: "NODE-TEXT",
           font: "bold 10px sans-serif",
           stroke: "#333",
           margin: 8, // make some extra space for the shape around the text
@@ -109,6 +109,7 @@ export default class GraphComponent extends Component {
 
     myDiagram.linkTemplate = $(
       go.Link,
+      { selectionObjectName: "LINK-TEXT" },
       { toShortLength: 3, relinkableFrom: true, relinkableTo: true }, // allow the user to relink existing links
       $(go.Shape, { strokeWidth: 2 }, new go.Binding("stroke", "color")),
       $(
@@ -117,7 +118,8 @@ export default class GraphComponent extends Component {
         new go.Binding("fill", "color")
       ),
       $(
-        go.TextBlock, // this is a Link label
+        go.TextBlock,
+        { name: "LINK-TEXT" }, // this is a Link label
         new go.Binding("text", "text")
       ),
       {
@@ -225,11 +227,21 @@ export default class GraphComponent extends Component {
   changeTextSize(obj, factor) {
     var adorn = obj.part;
     adorn.diagram.startTransaction("Change Text Size");
-    var node = adorn.adornedPart;
-    var tb = node.findObject("TEXT");
-    tb.scale *= factor;
+    var object;
+
+    var link = adorn.adornedPart.findObject("LINK-TEXT");
+    var node = adorn.adornedPart.findObject("NODE-TEXT");
+
+    if (node) {
+      var node = adorn.adornedPart;
+      object = node;
+    } else if (link) {
+      var link = adorn.adornedPart;
+      object = link;
+      factor = 1 / 2;
+    }
+    object.scale *= factor;
     adorn.diagram.commitTransaction("Change Text Size");
-    console.log(tb.font);
   }
 
   @action
