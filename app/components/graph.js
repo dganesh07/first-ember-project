@@ -12,11 +12,18 @@ export default class GraphComponent extends Component {
     return this.args.test;
   }
 
-  buildNodeData() {
+  buildGraphData() {
     var nodeArray = [];
-    this.goJsData.map((elem) => {
-      nodeArray.pushObject(elem.toJSON());
+    var linkArray = [];
+    //debugger;
+    // this.goJsData.map((elem) => {
+    //   nodeArray.pushObject(elem.toJSON());
+    // });
+    var dataObject = this.goJsData;
+    Object.keys(dataObject).map(function (key, index) {
+      console.log(dataObject[key]);
     });
+    //console.log(this.goJsData);
     return nodeArray;
   }
 
@@ -30,7 +37,7 @@ export default class GraphComponent extends Component {
       "undoManager.isEnabled": true,
     });
 
-    var nodeDataArray = this.buildNodeData();
+    var nodeDataArray = this.buildGraphData();
     var linkDataArray = [
       { from: 1, to: 2, color: "blue", text: "alpha-link" },
       { from: 2, to: 3, color: "yellow", text: "beta-link" },

@@ -1,6 +1,6 @@
 <Graph @test={{model}} />
 {{outlet}}
 
-{{#each model as |post|}}
-<h3>{{post.color}}</h3>
+{{#each model.node as |n|}}
+<h3>{{n.color}}</h3>
 {{/each}}
