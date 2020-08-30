@@ -6,10 +6,11 @@ import * as go from "gojs";
 
 export default class GraphComponent extends Component {
   @tracked iconName = "check-circle";
+  @tracked iconText = "saved";
   $ = go.GraphObject.make;
 
   get goJsData() {
-    return this.args.test;
+    return this.args.graphDataObject;
   }
 
   buildGraphData() {
@@ -36,7 +37,6 @@ export default class GraphComponent extends Component {
     var $ = this.$;
 
     var myDiagram = $(go.Diagram, "myDiagramDiv", {
-      // enable Ctrl-Z to undo and Ctrl-Y to redo
       "clickCreatingTool.archetypeNodeData": { text: "Node", color: "white" },
       "undoManager.isEnabled": true,
     });
@@ -148,6 +148,7 @@ export default class GraphComponent extends Component {
   }
 
   changeTextSize(obj, factor) {
+    var self = this;
     var adorn = obj.part;
     adorn.diagram.startTransaction("Change Text Size");
     var object;
@@ -164,16 +165,22 @@ export default class GraphComponent extends Component {
       factor = 1 / 2;
     }
     object.scale *= factor;
+    this.changeIcon();
     adorn.diagram.commitTransaction("Change Text Size");
-    //adorn.diagram.requestUpdate();
+
+    setTimeout(function () {
+      self.changeIcon();
+    }, 5000);
   }
 
   @action
   changeIcon() {
     if (this.iconName == "check-circle") {
       this.iconName = "sync-alt";
+      this.iconText = "saving";
     } else {
       this.iconName = "check-circle";
+      this.iconText = "saved";
     }
   }
 }
