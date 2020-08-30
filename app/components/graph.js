@@ -15,16 +15,20 @@ export default class GraphComponent extends Component {
   buildGraphData() {
     var nodeArray = [];
     var linkArray = [];
-    //debugger;
-    // this.goJsData.map((elem) => {
-    //   nodeArray.pushObject(elem.toJSON());
-    // });
     var dataObject = this.goJsData;
     Object.keys(dataObject).map(function (key, index) {
-      console.log(dataObject[key]);
+      dataObject[key].map((elem) => {
+        if (key == "node") {
+          nodeArray.pushObject(elem.toJSON());
+        } else {
+          linkArray.pushObject(elem.toJSON());
+        }
+      });
     });
-    //console.log(this.goJsData);
-    return nodeArray;
+    return {
+      node: nodeArray,
+      link: linkArray,
+    };
   }
 
   @action
@@ -37,14 +41,10 @@ export default class GraphComponent extends Component {
       "undoManager.isEnabled": true,
     });
 
-    var nodeDataArray = this.buildGraphData();
-    var linkDataArray = [
-      { from: 1, to: 2, color: "blue", text: "alpha-link" },
-      { from: 2, to: 3, color: "yellow", text: "beta-link" },
-      { from: 3, to: 4, color: "green", text: "gamma-link" },
-      { from: 4, to: 5, color: "purple", text: "delta-link" },
-      { from: 5, to: 1, color: "purple", text: "epsilon-link" },
-    ];
+    let GraphData = this.buildGraphData();
+
+    var nodeDataArray = GraphData["node"];
+    var linkDataArray = GraphData["link"];
     myDiagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
 
     var self = this;

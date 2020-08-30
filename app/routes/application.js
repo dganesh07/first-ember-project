@@ -1,23 +1,22 @@
 import Route from "@ember/routing/route";
+import { inject as service } from "@ember/service";
 
 export default class ApplicationRoute extends Route {
-  model(params = {}) {
-    var data = {
+  @service store;
+
+  async model() {
+    let responseData = {
       link: [],
       node: [],
     };
-    return this.store
-      .findAll("node")
-      .then((node) => {
-        data["node"] = node.toArray();
-        this.store.findAll("link").then((link) => {
-          console.log("in link call");
-          data["link"] = link.toArray();
-        });
-        return data;
-      })
-      .catch((error) => {
-        /*Do something to inform user about network/server/request error here*/
+    await Promise.all([
+      this.store.findAll("node"),
+      this.store.findAll("link"),
+    ]).then((response) => {
+      response.map((data) => {
+        responseData[data.modelName] = data.toArray();
       });
+    });
+    return responseData;
   }
 }
