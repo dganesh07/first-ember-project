@@ -7,7 +7,10 @@ import * as go from "gojs";
 export default class GraphComponent extends Component {
   @tracked iconName = "check-circle";
   $ = go.GraphObject.make;
-
+  constructor() {
+    super(...arguments);
+    console.log(this.args.test)
+  }
   @action
   setupChart() {
     var $ = this.$;
