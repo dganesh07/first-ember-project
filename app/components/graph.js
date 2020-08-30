@@ -7,14 +7,26 @@ import * as go from "gojs";
 export default class GraphComponent extends Component {
   @tracked iconName = "check-circle";
   $ = go.GraphObject.make;
-  constructor() {
-    super(...arguments);
-    console.log(this.test);
-    
+  // constructor() {
+  //   super(...arguments);
+  //   console.log("here", this.args.test);
+
+  //   // this.args.test
+  //   //   .toArray()
+  //   //   .forEach((element) => console.log(element).toJSON());
+
+  //   console.log(this.goJsData());
+
+  // }
+
+  get goJsData() {
+    return this.args.test;
   }
+
   @action
   setupChart() {
     var $ = this.$;
+    this.goJsData.map((elem) => console.log(elem.toJSON()));
     var myDiagram = $(go.Diagram, "myDiagramDiv", {
       // enable Ctrl-Z to undo and Ctrl-Y to redo
       "clickCreatingTool.archetypeNodeData": { text: "Node", color: "white" },
