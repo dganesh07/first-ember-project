@@ -9,7 +9,8 @@ export default class GraphComponent extends Component {
   $ = go.GraphObject.make;
   constructor() {
     super(...arguments);
-    console.log(this.args.test)
+    console.log(this.test);
+    
   }
   @action
   setupChart() {
