@@ -7,39 +7,30 @@ import * as go from "gojs";
 export default class GraphComponent extends Component {
   @tracked iconName = "check-circle";
   $ = go.GraphObject.make;
-  // constructor() {
-  //   super(...arguments);
-  //   console.log("here", this.args.test);
-
-  //   // this.args.test
-  //   //   .toArray()
-  //   //   .forEach((element) => console.log(element).toJSON());
-
-  //   console.log(this.goJsData());
-
-  // }
 
   get goJsData() {
     return this.args.test;
   }
 
+  buildNodeData() {
+    var nodeArray = [];
+    this.goJsData.map((elem) => {
+      nodeArray.pushObject(elem.toJSON());
+    });
+    return nodeArray;
+  }
+
   @action
   setupChart() {
     var $ = this.$;
-    this.goJsData.map((elem) => console.log(elem.toJSON()));
+
     var myDiagram = $(go.Diagram, "myDiagramDiv", {
       // enable Ctrl-Z to undo and Ctrl-Y to redo
       "clickCreatingTool.archetypeNodeData": { text: "Node", color: "white" },
       "undoManager.isEnabled": true,
     });
 
-    var nodeDataArray = [
-      { key: 1, text: "Alpha", color: "lightblue" },
-      { key: 2, text: "Beta", color: "orange" },
-      { key: 3, text: "Gamma", color: "lightgreen" },
-      { key: 4, text: "Delta", color: "pink" },
-      { key: 5, text: "Epsilon", color: "red" },
-    ];
+    var nodeDataArray = this.buildNodeData();
     var linkDataArray = [
       { from: 1, to: 2, color: "blue", text: "alpha-link" },
       { from: 2, to: 3, color: "yellow", text: "beta-link" },

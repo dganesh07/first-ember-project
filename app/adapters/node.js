@@ -14,7 +14,7 @@ export default RESTAdapter.extend({
   host: "https://my-json-server.typicode.com/dganesh07/ember-node-json",
 
   pathForType: function (modelName) {
-    return "link";
+    return "db";
   },
 });
 
