@@ -10,6 +10,15 @@ module.exports = function (defaults) {
       plugins: true,
       themes: "royal",
     },
+    autoImport: {
+      webpack: {
+        node: {
+          Buffer: false,
+          global: true,
+          process: true,
+        },
+      },
+    },
   });
 
   // Use `app.import` to add additional libraries to the generated
