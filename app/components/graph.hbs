@@ -1,5 +1,10 @@
-<FaIcon @icon={{this.iconName}} @size="4x" />
-<p>{{this.iconText}}</p>
-<div id="myDiagramDiv" {{did-insert this.setupChart}} style="width:800px; height:200px; background-color: #DAE4E4;">
+<div class="icon-container">
+    <div>
+        <FaIcon class="save-icon" @icon={{this.iconName}} @size="2x" />
+    </div>
+    <p class="save-text">{{this.iconText}}</p>
 </div>
 
+<br />
+<div id="myDiagramDiv" {{did-insert this.setupChart}} style="width:100%; height:200px; background-color: #DAE4E4;">
+</div>
