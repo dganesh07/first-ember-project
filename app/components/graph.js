@@ -74,6 +74,14 @@ export default class GraphComponent extends Component {
       go.Node,
       "Auto",
       { selectionObjectName: "NODE-TEXT" },
+
+      // {
+      //   fromSpot: go.Spot.AllSides,
+      //   toSpot: go.Spot.AllSides,
+      //   fromLinkable: true,
+      //   toLinkable: true,
+      //   locationSpot: go.Spot.Center,
+      // },
       $(
         go.Shape,
         "RoundedRectangle",
@@ -113,7 +121,13 @@ export default class GraphComponent extends Component {
     myDiagram.linkTemplate = $(
       go.Link,
       { selectionObjectName: "LINK-TEXT" },
-      { relinkableFrom: true, relinkableTo: true }, // allow the user to relink existing links
+      // {
+      //   reshapable: true,
+      //   resegmentable: true,
+      //   relinkableFrom: true,
+      //   relinkableTo: true,
+      //   adjusting: go.Link.Stretch,
+      // },
       $(
         go.Shape,
         { strokeWidth: 2 },
