@@ -66,6 +66,7 @@
     "edition": "octane"
   },
   "dependencies": {
-    "gojs": "^2.1.23"
+    "gojs": "^2.1.23",
+    "random-words": "^1.1.1"
   }
 }
