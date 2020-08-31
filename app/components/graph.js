@@ -103,6 +103,7 @@ export default class GraphComponent extends Component {
         go.TextBlock,
         {
           name: "NODE-TEXT",
+          // Setting an inital font
           font: "normal normal bold 10px Georgia, Serif",
           stroke: "#333",
           margin: 8, // make some extra space for the shape around the text
@@ -111,9 +112,8 @@ export default class GraphComponent extends Component {
         },
         new go.Binding("font", "font").makeTwoWay(),
         new go.Binding("text", "text").makeTwoWay()
-      ), // the label shows the node data's text
+      ),
       {
-        // this context menu Adornment is shared by all nodes
         contextMenu: partContextMenu,
       }
     );
@@ -145,7 +145,6 @@ export default class GraphComponent extends Component {
         new go.Binding("font", "font").makeTwoWay()
       ),
       {
-        // the same context menu Adornment is shared by all links
         contextMenu: partContextMenu,
       }
     );
@@ -156,7 +155,6 @@ export default class GraphComponent extends Component {
       "ContextMenuButton",
       this.$(go.TextBlock, text),
       { click: action },
-      // don't bother with binding GraphObject.visible if there's no predicate
       visiblePredicate
         ? new go.Binding("visible", "", function (o, e) {
             return o.diagram ? visiblePredicate(o, e) : false;
@@ -178,44 +176,16 @@ export default class GraphComponent extends Component {
     let existingFont;
     let newFont;
     if (node) {
-      //var node = adorn.adornedPart;
       existingFont = parseInt(node.font.split(" ")[3].replace("px", ""));
       newFont = existingFont * 2;
       object = node;
     } else if (link) {
-      //var link = adorn.adornedPart;
       existingFont = parseInt(link.font.split(" ")[3].replace("px", ""));
-      object = link;
       newFont = existingFont / 2;
+      object = link;
     }
 
     object.font = `normal normal bold ${newFont}px Georgia, Serif`;
-    adorn.diagram.commitTransaction("Change Text Size");
-
-    setTimeout(function () {
-      self.changeIcon();
-    }, 5000);
-  }
-
-  changeTextSize(obj, factor) {
-    var self = this;
-    var adorn = obj.part;
-    adorn.diagram.startTransaction("Change Text Size");
-    var object;
-
-    var link = adorn.adornedPart.findObject("LINK-TEXT");
-    var node = adorn.adornedPart.findObject("NODE-TEXT");
-
-    if (node) {
-      var node = adorn.adornedPart;
-      object = node;
-    } else if (link) {
-      var link = adorn.adornedPart;
-      object = link;
-      factor = 1 / 2;
-    }
-    object.scale *= factor;
-    this.changeIcon();
     adorn.diagram.commitTransaction("Change Text Size");
 
     setTimeout(function () {
