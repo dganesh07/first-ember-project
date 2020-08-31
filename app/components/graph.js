@@ -53,7 +53,7 @@ export default class GraphComponent extends Component {
       this.makeButton(
         "Font Change",
         function (e, obj) {
-          self.changeTextSize(obj, 2);
+          self.changeFontSize(obj, 2);
         },
         function (o) {
           return o.diagram.commandHandler.canCutSelection();
@@ -74,7 +74,6 @@ export default class GraphComponent extends Component {
       go.Node,
       "Auto",
       { selectionObjectName: "NODE-TEXT" },
-      { locationSpot: go.Spot.Center },
       $(
         go.Shape,
         "RoundedRectangle",
@@ -96,7 +95,7 @@ export default class GraphComponent extends Component {
         go.TextBlock,
         {
           name: "NODE-TEXT",
-          font: "bold 10px sans-serif",
+          font: "normal normal bold 10px Georgia, Serif",
           stroke: "#333",
           margin: 8, // make some extra space for the shape around the text
           isMultiline: false, // don't allow newlines in text
@@ -115,16 +114,21 @@ export default class GraphComponent extends Component {
       go.Link,
       { selectionObjectName: "LINK-TEXT" },
       { relinkableFrom: true, relinkableTo: true }, // allow the user to relink existing links
-      $(go.Shape, { strokeWidth: 2 }, new go.Binding("stroke", "color")),
+      $(
+        go.Shape,
+        { strokeWidth: 2 },
+        new go.Binding("stroke", "color").makeTwoWay()
+      ),
       $(
         go.Shape,
         { toArrow: "Standard", stroke: null },
-        new go.Binding("fill", "color")
+        new go.Binding("fill", "color").makeTwoWay()
       ),
       $(
         go.TextBlock,
-        { name: "LINK-TEXT" }, // this is a Link label
-        new go.Binding("text", "text")
+        { name: "LINK-TEXT", font: "normal normal bold 20px Georgia, Serif" }, // this is a Link label
+        new go.Binding("text", "text").makeTwoWay(),
+        new go.Binding("font", "font").makeTwoWay()
       ),
       {
         // the same context menu Adornment is shared by all links
@@ -145,6 +149,38 @@ export default class GraphComponent extends Component {
           }).ofObject()
         : {}
     );
+  }
+
+  changeFontSize(obj) {
+    var self = this;
+    var adorn = obj.part;
+    adorn.diagram.startTransaction("Change Text Size");
+    this.changeIcon();
+    var object;
+
+    var link = adorn.adornedPart.findObject("LINK-TEXT");
+    var node = adorn.adornedPart.findObject("NODE-TEXT");
+
+    let existingFont;
+    let newFont;
+    if (node) {
+      //var node = adorn.adornedPart;
+      existingFont = parseInt(node.font.split(" ")[3].replace("px", ""));
+      newFont = existingFont * 2;
+      object = node;
+    } else if (link) {
+      //var link = adorn.adornedPart;
+      existingFont = parseInt(link.font.split(" ")[3].replace("px", ""));
+      object = link;
+      newFont = existingFont / 2;
+    }
+
+    object.font = `normal normal bold ${newFont}px Georgia, Serif`;
+    adorn.diagram.commitTransaction("Change Text Size");
+
+    setTimeout(function () {
+      self.changeIcon();
+    }, 5000);
   }
 
   changeTextSize(obj, factor) {
